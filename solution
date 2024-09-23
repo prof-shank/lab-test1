@@ -1,0 +1,30 @@
+Even 
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import butter,filtfilt
+minutes=1440
+base_traffic = np.random.poisson(lam=80, size=minutes)  
+noise = np.random.normal(loc=0, scale=10, size=minutes)  
+vehicle_count = base_traffic + noise    
+
+smoothed_data=low_pass_filter(vehicle_count)  
+hourly_averages = np.array([np.mean(vehicle_count[i*60:(i+1)*60]) for i in range(24)])
+print(f"Hourly averages:\n{hourly_averages}")
+plt.figure(figsize=(14, 7))
+plt.plot(vehicle_count, label='Noisy Data', color='blue', alpha=0.5)
+plt.plot(smoothed_data, label='Smoothed Data', color='orange')
+plt.scatter(np.arange(0, 1440, 60), hourly_averages, color='red', marker='o', label='Hourly Averages')
+plt.title('Vehicle Traffic Monitoring')
+plt.xlabel('Minutes')
+plt.ylabel('Number of Vehicles')
+plt.legend()
+plt.grid()
+plt.show()
+
+
+
+
+
+
+
