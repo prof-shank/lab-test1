@@ -7,7 +7,12 @@ minutes=1440
 base_traffic = np.random.poisson(lam=80, size=minutes)  
 noise = np.random.normal(loc=0, scale=10, size=minutes)  
 vehicle_count = base_traffic + noise    
-
+def low_pass_filter(data, cutoff=0.05, fs=1.0, order=5):
+    nyquist = 0.5 * fs
+    normal_cutoff = cutoff / nyquist
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    y = filtfilt(b, a, data)
+    return y
 smoothed_data=low_pass_filter(vehicle_count)  
 hourly_averages = np.array([np.mean(vehicle_count[i*60:(i+1)*60]) for i in range(24)])
 print(f"Hourly averages:\n{hourly_averages}")
